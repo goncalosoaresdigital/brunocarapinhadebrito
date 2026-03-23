@@ -745,28 +745,99 @@
       color: var(--black);
     }
 
+    /* HAMBURGER MENU */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 300;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--gold);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(4px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(4px, -5px); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 199;
+      background: rgba(6,6,6,0.98);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+    .mobile-menu .nav-cta-mobile {
+      margin-top: 1rem;
+      padding: 0.75rem 2rem;
+      background: var(--gold);
+      color: var(--black);
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 900px) {
+      .hamburger { display: flex; }
       nav { padding: 1.25rem 1.5rem; }
       .nav-links { display: none; }
       .hero { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
-      .hero-photo-side { height: 50vh; }
-      .hero-content-side { padding: 3rem 1.5rem 5rem; }
-      .stats-inner { grid-template-columns: repeat(2,1fr); }
-      .stat-item:nth-child(2) { border-right: none; }
+      .hero-photo-side { height: 55vh; }
+      .hero-photo-side img { object-position: 65% top !important; }
+      .hero-vertical-text { display: none; }
+      .hero-content-side { padding: 3rem 1.5rem 4rem; }
+      .hero-bg-num { font-size: 14rem; right: -1rem; }
+      h1 { font-size: clamp(2rem, 8vw, 3rem); }
+      .hero-desc { font-size: 0.85rem; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); padding: 0 1.5rem; }
+      .stat-item { padding: 1.25rem 0.75rem; gap: 0.6rem; border-right: 1px solid var(--border); }
+      .stat-item:nth-child(2), .stat-item:nth-child(4) { border-right: none; }
+      .stat-item:nth-child(3), .stat-item:nth-child(4) { border-top: 1px solid var(--border); }
+      .stat-n { font-size: 1.5rem; }
+      .stat-l { font-size: 0.58rem; line-height: 1.4; }
+      .section-wrap { padding: 4rem 1.5rem; }
       .sobre-layout { grid-template-columns: 1fr; gap: 3rem; }
-      .sobre-img img { height: 400px; }
+      .sobre-img img { height: 350px; }
+      .sobre-img::before, .sobre-img::after { display: none; }
       .pilares { grid-template-columns: 1fr; }
-      .servico-row { grid-template-columns: 60px 1fr; }
+      .servico-row { grid-template-columns: 60px 1fr; gap: 1rem; padding: 1.75rem 0; }
+      .servico-row:hover { margin: 0; padding: 1.75rem 0; }
+      .servico-info h3 { font-size: 1.2rem; }
       .servico-arrow { display: none; }
       .processo-grid { grid-template-columns: 1fr; }
-      .contacto-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .processo-card { padding: 2rem 1.5rem; }
+      .processo-num { font-size: 3.5rem; }
+      .contacto-layout { grid-template-columns: 1fr !important; gap: 2.5rem; }
       .form-row { grid-template-columns: 1fr; }
       .imoveis-grid { grid-template-columns: 1fr; }
-      
-      footer { grid-template-columns: 1fr; text-align: center; gap: 1rem; }
+
+      footer { grid-template-columns: 1fr; text-align: center; gap: 1rem; padding: 2rem 1.5rem; }
+      footer img { margin: 0 auto; }
       footer p { text-align: center; }
       .footer-center { justify-content: center; }
+      .footer-right { justify-content: center !important; flex-direction: column; align-items: center; gap: 0.75rem; }
     }
   </style>
 </head>
@@ -783,7 +854,18 @@
       <li><a href="#processo">Processo</a></li>
       <li><a href="#contacto" class="nav-cta">Contactar</a></li>
     </ul>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="imoveis.html">Imóveis</a>
+    <a href="#sobre" onclick="toggleMenu()">Sobre</a>
+    <a href="#servicos" onclick="toggleMenu()">Serviços</a>
+    <a href="#processo" onclick="toggleMenu()">Processo</a>
+    <a href="#contacto" class="nav-cta-mobile" onclick="toggleMenu()">Contactar</a>
+  </div>
 
   <!-- HERO -->
   <div class="hero">
@@ -1046,7 +1128,7 @@
   <footer>
     <img src="BC_IdentidadeVisual_completo_branco_semfundo.png" alt="Bruno Carapinha de Brito">
     <div class="footer-center">© 2026</div>
-    <div style="display:flex; align-items:center; gap:1.5rem; justify-content:flex-end;">
+    <div class="footer-right" style="display:flex; align-items:center; gap:1.5rem; justify-content:flex-end;">
       <a href="https://www.instagram.com/brunocarapinhadebrito" target="_blank" style="display:flex; align-items:center; gap:0.5rem; color:var(--muted); text-decoration:none; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
       </a>
@@ -1070,4 +1152,10 @@
       });
     }, { threshold: 0.1 });
     reveals.forEach(el => observer.observe(el));
+
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+      document.querySelector('.hamburger').classList.toggle('active');
+      document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+    }
   </script>

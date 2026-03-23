@@ -260,16 +260,74 @@
     .footer-center::before, .footer-center::after { content: ''; width: 20px; height: 1px; background: var(--border); }
     footer p { font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted); text-align: right; }
 
+    /* HAMBURGER MENU */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 300;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--gold);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(4px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(4px, -5px); }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 199;
+      background: rgba(6,6,6,0.98);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 1rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+    .mobile-menu .nav-cta-mobile {
+      margin-top: 1rem;
+      padding: 0.75rem 2rem;
+      background: var(--gold);
+      color: var(--black);
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
     @media (max-width: 900px) {
+      .hamburger { display: flex; }
       nav { padding: 1.25rem 1.5rem; }
       .nav-links { display: none; }
-      .page-header { padding: 7rem 1.5rem 2rem; }
-      .tabs-wrap { padding: 2rem 1.5rem 0; }
+      .page-header { padding: 6rem 1.5rem 1.5rem; }
+      .page-header h1 { font-size: clamp(1.6rem, 7vw, 2.5rem); }
+      .tabs-wrap { padding: 1.5rem 1.5rem 0; }
+      .tab-btn { padding: 0.75rem 1.25rem; font-size: 0.7rem; }
       .imoveis-wrap { padding: 2rem 1.5rem 4rem; }
       .imoveis-grid { grid-template-columns: 1fr; }
       footer { grid-template-columns: 1fr; text-align: center; padding: 2rem 1.5rem; }
+      footer img { margin: 0 auto; }
       footer p { text-align: center; }
       .footer-center { justify-content: center; }
+      .footer-right { justify-content: center !important; flex-direction: column; align-items: center; gap: 0.75rem; }
     }
   </style>
 </head>
@@ -286,7 +344,18 @@
       <li><a href="index.html#processo">Processo</a></li>
       <li><a href="index.html#contacto" class="nav-cta">Contactar</a></li>
     </ul>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="imoveis.html">Imóveis</a>
+    <a href="index.html#sobre">Sobre</a>
+    <a href="index.html#servicos">Serviços</a>
+    <a href="index.html#processo">Processo</a>
+    <a href="index.html#contacto" class="nav-cta-mobile">Contactar</a>
+  </div>
 
   <div class="page-header">
     <div class="breadcrumb">
@@ -436,7 +505,7 @@
   <footer>
     <img src="BC_IdentidadeVisual_completo_branco_semfundo.png" alt="Bruno Carapinha de Brito">
     <div class="footer-center">© 2026</div>
-    <div style="display:flex; align-items:center; gap:1.5rem; justify-content:flex-end;">
+    <div class="footer-right" style="display:flex; align-items:center; gap:1.5rem; justify-content:flex-end;">
       <a href="https://www.instagram.com/brunocarapinhadebrito" target="_blank" style="display:flex; align-items:center; gap:0.5rem; color:var(--muted); text-decoration:none; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
       </a>
@@ -450,6 +519,11 @@
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('panel-' + tab).classList.add('active');
+    }
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+      document.querySelector('.hamburger').classList.toggle('active');
+      document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
     }
   </script>
 
