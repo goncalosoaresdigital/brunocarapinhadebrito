@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bruno Carapinha de Brito — Real Estate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #060606;
+      --black2: #0f0f0f;
+      --black3: #181818;
+      --gold: #c9a84c;
+      --gold-light: #e2c46a;
+      --gold-dim: rgba(201,168,76,0.08);
+      --gold-line: rgba(201,168,76,0.25);
+      --white: #f2ede4;
+      --muted: #6b6355;
+      --border: rgba(201,168,76,0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(6,6,6,0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(6,6,6,0.99);
+    }
+    .nav-logo img { height: 40px; width: auto; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      padding: 0.55rem 1.4rem;
+      background: var(--gold) !important;
+      color: var(--black) !important;
+      font-weight: 600 !important;
+    }
+    .nav-cta:hover {
+      background: var(--gold-light) !important;
+      color: var(--black) !important;
+    }
+
+    /* HERO — full bleed split */
+    .hero {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 55% 45%;
+      position: relative;
+    }
+
+    .hero-photo-side {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-photo-side img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: grayscale(20%) brightness(0.75) contrast(1.1);
+    }
+    .hero-photo-side::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 60%, var(--black) 100%),
+                  linear-gradient(to top, var(--black) 0%, transparent 30%);
+    }
+
+    /* big vertical text on photo */
+    .hero-vertical-text {
+      position: absolute;
+      bottom: 3rem;
+      left: 2.5rem;
+      z-index: 2;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    .hero-content-side {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 4rem 4rem 3rem;
+      position: relative;
+    }
+
+    /* giant background number */
+    .hero-bg-num {
+      position: absolute;
+      top: 50%;
+      right: -2rem;
+      transform: translateY(-50%);
+      font-family: 'Libre Baskerville', serif;
+      font-size: 28rem;
+      font-weight: 700;
+      color: rgba(201,168,76,0.03);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.6s ease both;
+    }
+    .hero-tag::before {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    h1 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2.4rem, 4vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 2rem;
+      letter-spacing: -0.02em;
+      animation: fadeIn 0.6s 0.15s ease both;
+      opacity: 0;
+    }
+    h1 .italic { font-style: italic; color: var(--gold-light); font-weight: 400; }
+
+    .hero-sep {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 2rem;
+      animation: fadeIn 0.6s 0.25s ease both;
+      opacity: 0;
+    }
+
+    .hero-desc {
+      font-size: 0.9rem;
+      color: rgba(242,237,228,0.55);
+      line-height: 1.95;
+      margin-bottom: 2.5rem;
+      animation: fadeIn 0.6s 0.35s ease both;
+      opacity: 0;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      animation: fadeIn 0.6s 0.45s ease both;
+      opacity: 0;
+    }
+
+    .cta-main {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.1rem 2rem;
+      background: var(--gold);
+      color: var(--black);
+      text-decoration: none;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: background 0.2s;
+      align-self: flex-start;
+    }
+    .cta-main:hover { background: var(--gold-light); }
+    .cta-main svg { flex-shrink: 0; }
+
+    .cta-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+      align-self: flex-start;
+    }
+    .cta-sub:hover { color: var(--gold); }
+
+    /* STATS BAR */
+    .stats-bar {
+      background: var(--black2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 3rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .stat-item {
+      padding: 2rem;
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-n {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .stat-l {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* SECTIONS */
+    .section-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 7rem 3rem;
+    }
+
+    .eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+    h2 em { font-style: italic; color: var(--gold-light); font-weight: 400; }
+
+    /* SOBRE */
+    .sobre-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .sobre-img {
+      position: relative;
+    }
+    .sobre-img img {
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      filter: grayscale(10%) contrast(1.05);
+    }
+    /* gold corner accent */
+    .sobre-img::before {
+      content: '';
+      position: absolute;
+      top: -12px; left: -12px;
+      width: 60px; height: 60px;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+      z-index: 1;
+    }
+    .sobre-img::after {
+      content: '';
+      position: absolute;
+      bottom: -12px; right: -12px;
+      width: 60px; height: 60px;
+      border-bottom: 2px solid var(--gold);
+      border-right: 2px solid var(--gold);
+    }
+
+    .sobre-content p {
+      font-size: 0.92rem;
+      color: rgba(242,237,228,0.6);
+      line-height: 1.95;
+      margin-bottom: 1.25rem;
+    }
+
+    .pilares {
+      margin-top: 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .pilar {
+      padding: 1.25rem;
+      border: 1px solid var(--border);
+      background: var(--gold-dim);
+      transition: border-color 0.2s;
+    }
+    .pilar:hover { border-color: var(--gold); }
+    .pilar-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .pilar p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* SERVIÇOS */
+    .servicos-bg {
+      background: var(--black2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .servicos-list {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .servico-row {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 2rem;
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+      cursor: default;
+    }
+    .servico-row:first-child { border-top: 1px solid var(--border); }
+    .servico-row:hover { background: var(--gold-dim); margin: 0 -3rem; padding: 2.5rem 3rem; }
+
+    .servico-index {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      font-style: italic;
+    }
+    .servico-info h3 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 0.4rem;
+    }
+    .servico-info p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .servico-arrow {
+      color: var(--gold);
+      font-size: 1.5rem;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .servico-row:hover .servico-arrow { opacity: 1; transform: translateX(4px); }
+
+    /* PROCESSO */
+    .processo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    .processo-card {
+      background: var(--black);
+      padding: 3rem;
+      position: relative;
+      transition: background 0.3s;
+    }
+    .processo-card:hover { background: var(--black3); }
+    .processo-num {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 5rem;
+      font-weight: 700;
+      color: rgba(201,168,76,0.06);
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      line-height: 1;
+    }
+    .processo-card h3 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    .processo-card h3::after {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--gold);
+      margin-top: 0.75rem;
+    }
+    .processo-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.8;
+      position: relative;
+    }
+
+    /* CONTACTO */
+    .contacto-bg {
+      background: var(--black2);
+      border-top: 1px solid var(--border);
+    }
+
+    .contacto-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .contacto-left p {
+      font-size: 0.9rem;
+      color: rgba(242,237,228,0.55);
+      line-height: 1.95;
+      margin-bottom: 3rem;
+    }
+
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      transition: padding-left 0.2s;
+    }
+    .contact-row:first-child { border-top: 1px solid var(--border); }
+    .contact-row:hover { padding-left: 0.5rem; }
+    .contact-icon-box {
+      width: 44px; height: 44px;
+      border: 1px solid var(--gold-line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 1rem;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .contact-row:hover .contact-icon-box { background: var(--gold-dim); }
+    .contact-row-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .contact-row-value {
+      font-size: 0.92rem;
+      color: var(--white);
+    }
+
+    .contacto-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .form-group input,
+    .form-group textarea {
+      background: var(--black);
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 0.9rem 1rem;
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--gold); }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--muted); font-size: 0.82rem; }
+
+    .form-submit {
+      padding: 1rem 2.5rem;
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      align-self: flex-start;
+    }
+    .form-submit:hover { background: var(--gold-light); }
+
+    /* FOOTER */
+    footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 3rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 2rem;
+    }
+    footer img { height: 34px; opacity: 0.5; }
+    .footer-center {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .footer-center::before,
+    .footer-center::after {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--border);
+    }
+    footer p {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .js-loaded .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .js-loaded .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* IMÓVEIS */
+    .imoveis-bg {
+      background: var(--black2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .imoveis-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .imovel-card {
+      background: var(--black);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+    .imovel-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+    }
+
+    .imovel-img {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+    }
+    .imovel-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+      filter: brightness(0.9);
+    }
+    .imovel-card:hover .imovel-img img { transform: scale(1.04); }
+
+    .imovel-tag {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+    }
+
+    .imovel-info {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .imovel-preco {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+      line-height: 1;
+    }
+
+    .imovel-titulo {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+    }
+
+    .imovel-local {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    .imovel-detalhes {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+
+    .imovel-detalhe {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .imovel-detalhe span { color: var(--white); font-weight: 500; }
+
+    .imovel-link {
+      display: block;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+    .imovel-link:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; height: auto; min-height: 100vh; }
+      .hero-photo-side { height: 50vh; }
+      .hero-content-side { padding: 3rem 1.5rem 5rem; }
+      .stats-inner { grid-template-columns: repeat(2,1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .sobre-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .sobre-img img { height: 400px; }
+      .pilares { grid-template-columns: 1fr; }
+      .servico-row { grid-template-columns: 60px 1fr; }
+      .servico-arrow { display: none; }
+      .processo-grid { grid-template-columns: 1fr; }
+      .contacto-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .imoveis-grid { grid-template-columns: 1fr; }
+      
+      footer { grid-template-columns: 1fr; text-align: center; gap: 1rem; }
+      footer p { text-align: center; }
+      .footer-center { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="nav">
+    <a href="#" class="nav-logo">
+      <img src="BC_IdentidadeVisual_completo_branco_semfundo.png" alt="Bruno Carapinha de Brito">
+    </a>
+    <ul class="nav-links">
+      <li><a href="imoveis.html">Imóveis</a></li>
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#servicos">Serviços</a></li>
+      <li><a href="#processo">Processo</a></li>
+      <li><a href="#contacto" class="nav-cta">Contactar</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-photo-side">
+      <img src="foto2.jpg" alt="Bruno Carapinha de Brito">
+      <div class="hero-vertical-text">RE/MAX Portugal · Consultor Imobiliário</div>
+    </div>
+    <div class="hero-content-side">
+      <div class="hero-bg-num">B</div>
+      <div class="hero-tag">Consultor Imobiliário</div>
+      <h1>Bruno<br><span class="italic">Carapinha<br>de Brito</span></h1>
+      <div class="hero-sep"></div>
+      <p class="hero-desc">Especialista em compra e venda de imóveis em Portugal. Rigor, transparência e resultados — do primeiro contacto à escritura.</p>
+      <div class="hero-cta-group">
+        <a href="#contacto" class="cta-main">
+          Marcar reunião
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#sobre" class="cta-sub">Conhecer o meu trabalho →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item">
+        <div class="stat-n">5+</div>
+        <div class="stat-l">Anos de<br>experiência</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-n">100+</div>
+        <div class="stat-l">Imóveis<br>vendidos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-n">98%</div>
+        <div class="stat-l">Clientes<br>satisfeitos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-n">RE/MAX</div>
+        <div class="stat-l">Rede nº1<br>do mundo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMÓVEIS -->
+  <div class="imoveis-bg" id="imoveis">
+    <div class="section-wrap">
+      <div class="eyebrow reveal">Portfólio</div>
+      <h2 class="reveal">Imóveis em <em>destaque</em></h2>
+      <div class="imoveis-grid reveal">
+        <div class="imovel-card">
+          <div class="imovel-img">
+            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80" alt="Moradia T4">
+            <div class="imovel-tag">Venda</div>
+          </div>
+          <div class="imovel-info">
+            <div class="imovel-preco">€ 380.000</div>
+            <div class="imovel-titulo">Moradia T4 com jardim</div>
+            <div class="imovel-local">📍 Porto, Foz do Douro</div>
+            <div class="imovel-detalhes">
+              <div class="imovel-detalhe"><span>4</span> quartos</div>
+              <div class="imovel-detalhe"><span>3</span> wc</div>
+              <div class="imovel-detalhe"><span>220</span> m²</div>
+            </div>
+            <a href="https://www.remax.pt" target="_blank" class="imovel-link">Ver anúncio RE/MAX →</a>
+          </div>
+        </div>
+        <div class="imovel-card">
+          <div class="imovel-img">
+            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80" alt="Apartamento T2">
+            <div class="imovel-tag">Venda</div>
+          </div>
+          <div class="imovel-info">
+            <div class="imovel-preco">€ 195.000</div>
+            <div class="imovel-titulo">Apartamento T2 renovado</div>
+            <div class="imovel-local">📍 Vila Nova de Gaia</div>
+            <div class="imovel-detalhes">
+              <div class="imovel-detalhe"><span>2</span> quartos</div>
+              <div class="imovel-detalhe"><span>1</span> wc</div>
+              <div class="imovel-detalhe"><span>98</span> m²</div>
+            </div>
+            <a href="https://www.remax.pt" target="_blank" class="imovel-link">Ver anúncio RE/MAX →</a>
+          </div>
+        </div>
+        <div class="imovel-card">
+          <div class="imovel-img">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80" alt="Moradia T3">
+            <div class="imovel-tag">Venda</div>
+          </div>
+          <div class="imovel-info">
+            <div class="imovel-preco">€ 520.000</div>
+            <div class="imovel-titulo">Moradia T3 de luxo com piscina</div>
+            <div class="imovel-local">📍 Matosinhos</div>
+            <div class="imovel-detalhes">
+              <div class="imovel-detalhe"><span>3</span> quartos</div>
+              <div class="imovel-detalhe"><span>2</span> wc</div>
+              <div class="imovel-detalhe"><span>310</span> m²</div>
+            </div>
+            <a href="https://www.remax.pt" target="_blank" class="imovel-link">Ver anúncio RE/MAX →</a>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:2.5rem;">
+        <a href="imoveis.html" style="display:inline-flex; align-items:center; gap:0.75rem; padding:1rem 2.5rem; border:1px solid var(--gold); color:var(--gold); text-decoration:none; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; font-weight:600; transition:background 0.2s, color 0.2s;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--black)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">
+          Ver todos os imóveis
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOBRE -->
+  <div id="sobre">
+    <div class="section-wrap">
+      <div class="sobre-layout">
+        <div class="sobre-img reveal">
+          <img src="foto2.jpg" alt="Bruno Carapinha de Brito">
+        </div>
+        <div class="sobre-content reveal">
+          <div class="eyebrow">Sobre mim</div>
+          <h2>Experiência ao serviço <em>do seu imóvel</em></h2>
+          <p>Com vários anos de experiência no mercado imobiliário português, o meu trabalho assenta numa premissa simples: cada cliente merece atenção personalizada e resultados concretos.</p>
+          <p>Integro a rede RE/MAX, a maior rede imobiliária do mundo, o que me permite oferecer exposição máxima ao seu imóvel e acesso a uma carteira exclusiva de compradores qualificados.</p>
+          <div class="pilares">
+            <div class="pilar">
+              <div class="pilar-title">Transparência</div>
+              <p>Informação clara em todo o processo</p>
+            </div>
+            <div class="pilar">
+              <div class="pilar-title">Rigor</div>
+              <p>Avaliação precisa de mercado</p>
+            </div>
+            <div class="pilar">
+              <div class="pilar-title">Negociação</div>
+              <p>Máximo valor para o seu imóvel</p>
+            </div>
+            <div class="pilar">
+              <div class="pilar-title">Acompanhamento</div>
+              <p>Presente do início ao fim</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVIÇOS -->
+  <div class="servicos-bg" id="servicos">
+    <div class="section-wrap">
+      <div class="eyebrow reveal">Serviços</div>
+      <h2 class="reveal">O que posso <em>fazer por si</em></h2>
+      <div class="servicos-list reveal">
+        <div class="servico-row">
+          <div class="servico-index">01.</div>
+          <div class="servico-info">
+            <h3>Venda de Imóveis</h3>
+            <p>Estratégia de marketing personalizada, fotografia profissional e exposição máxima para vender ao melhor preço.</p>
+          </div>
+          <div class="servico-arrow">→</div>
+        </div>
+        <div class="servico-row">
+          <div class="servico-index">02.</div>
+          <div class="servico-info">
+            <h3>Compra Assistida</h3>
+            <p>Acompanho todo o processo de compra, desde a pesquisa até à escritura, garantindo a propriedade ideal.</p>
+          </div>
+          <div class="servico-arrow">→</div>
+        </div>
+        <div class="servico-row">
+          <div class="servico-index">03.</div>
+          <div class="servico-info">
+            <h3>Avaliação Gratuita</h3>
+            <p>Avaliação profissional e rigorosa do seu imóvel, com base nas condições reais do mercado atual.</p>
+          </div>
+          <div class="servico-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROCESSO -->
+  <div id="processo">
+    <div class="section-wrap">
+      <div class="eyebrow reveal">Como trabalho</div>
+      <h2 class="reveal">Quatro passos para <em>o resultado certo</em></h2>
+      <div class="processo-grid reveal">
+        <div class="processo-card">
+          <div class="processo-num">1</div>
+          <h3>Primeiro contacto</h3>
+          <p>Reunião inicial para entender as suas necessidades e objetivos, sem compromisso.</p>
+        </div>
+        <div class="processo-card">
+          <div class="processo-num">2</div>
+          <h3>Análise de mercado</h3>
+          <p>Estudo detalhado do mercado local para definir a estratégia e o preço ideal.</p>
+        </div>
+        <div class="processo-card">
+          <div class="processo-num">3</div>
+          <h3>Execução</h3>
+          <p>Divulgação, visitas, negociação e tratamento de toda a documentação necessária.</p>
+        </div>
+        <div class="processo-card">
+          <div class="processo-num">4</div>
+          <h3>Escritura</h3>
+          <p>Acompanhamento até ao final, garantindo uma transação segura e tranquila.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contacto-bg" id="contacto">
+    <div class="section-wrap">
+      <div class="contacto-layout" style="grid-template-columns: 1fr 1fr;">
+        <div class="contacto-left reveal">
+          <div class="eyebrow">Contacto</div>
+          <h2>Vamos falar sobre <em>o seu imóvel</em></h2>
+          <p>Esteja a pensar vender, comprar ou apenas a explorar opções — estou disponível para uma conversa sem compromisso.</p>
+          <div class="contact-list">
+            <a href="tel:+351914475598" class="contact-row">
+              <div class="contact-icon-box">✆</div>
+              <div>
+                <div class="contact-row-label">Telefone</div>
+                <div class="contact-row-value">+351 914 475 598</div>
+              </div>
+            </a>
+            <a href="mailto:bruno.fpereira@remax.com" class="contact-row">
+              <div class="contact-icon-box">✉</div>
+              <div>
+                <div class="contact-row-label">Email</div>
+                <div class="contact-row-value">bruno.fpereira@remax.com</div>
+              </div>
+            </a>
+            <a href="#" class="contact-row">
+              <div class="contact-icon-box">◎</div>
+              <div>
+                <div class="contact-row-label">Zona de atuação</div>
+                <div class="contact-row-value">Portugal — Grande Porto e Norte</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="reveal" style="display:flex; flex-direction:column; justify-content:center; gap:1rem;">
+          <p style="font-size:0.85rem; color:var(--muted); margin-bottom:0.5rem; line-height:1.8;">Prefere falar diretamente? Entre em contacto pelo WhatsApp ou envie um email — responderei o mais brevemente possível.</p>
+          <a href="https://wa.me/351914475598" target="_blank" style="display:flex; align-items:center; gap:1rem; padding:1.25rem 1.75rem; background:var(--gold); color:var(--black); text-decoration:none; font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:600; transition:background 0.2s;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Falar no WhatsApp
+          </a>
+          <a href="mailto:bruno.fpereira@remax.com" style="display:flex; align-items:center; gap:1rem; padding:1.25rem 1.75rem; background:transparent; color:var(--gold); text-decoration:none; font-size:0.78rem; letter-spacing:0.15em; text-transform:uppercase; font-weight:600; border:1px solid var(--gold); transition:background 0.2s, color 0.2s;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--black)'" onmouseout="this.style.background='transparent';this.style.color='var(--gold)'">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Enviar email
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <img src="BC_IdentidadeVisual_completo_branco_semfundo.png" alt="Bruno Carapinha de Brito">
+    <div class="footer-center">© 2026</div>
+    <div style="display:flex; align-items:center; gap:1.5rem; justify-content:flex-end;">
+      <a href="https://www.instagram.com/brunocarapinhadebrito" target="_blank" style="display:flex; align-items:center; gap:0.5rem; color:var(--muted); text-decoration:none; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        Instagram
+      </a>
+      <span style="font-size:0.65rem; letter-spacing:0.1em; color:var(--muted);">Bruno Carapinha de Brito · RE/MAX Portugal</span>
+    </div>
+  </footer>
+
+  <script>
+    document.body.classList.add('js-loaded');
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>

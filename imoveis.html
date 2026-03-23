@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imóveis — Bruno Carapinha de Brito</title>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Barlow:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #060606;
+      --black2: #0f0f0f;
+      --black3: #181818;
+      --gold: #c9a84c;
+      --gold-light: #e2c46a;
+      --gold-dim: rgba(201,168,76,0.08);
+      --white: #f2ede4;
+      --muted: #6b6355;
+      --border: rgba(201,168,76,0.18);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(6,6,6,0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo img { height: 40px; width: auto; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a.active { color: var(--gold); }
+    .nav-cta { padding: 0.55rem 1.4rem; background: var(--gold) !important; color: var(--black) !important; font-weight: 600 !important; }
+    .nav-cta:hover { background: var(--gold-light) !important; }
+
+    .page-header {
+      padding: 9rem 3rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .breadcrumb {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--gold); }
+    .breadcrumb span { color: var(--gold); }
+    .page-header h1 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .page-header h1 em { font-style: italic; color: var(--gold-light); font-weight: 400; }
+
+    .tabs-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 3rem 0;
+      display: flex;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      padding: 1rem 2rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      margin-bottom: -1px;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .tab-btn:hover { color: var(--white); }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      font-size: 0.65rem;
+      font-weight: 600;
+      background: var(--border);
+      color: var(--muted);
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab-btn.active .tab-count { background: var(--gold-dim); color: var(--gold); }
+
+    .imoveis-wrap { max-width: 1200px; margin: 0 auto; padding: 3rem 3rem 6rem; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .imoveis-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .imovel-card {
+      background: var(--black2);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      display: flex;
+      flex-direction: column;
+      animation: cardIn 0.5s ease both;
+    }
+    .imovel-card:nth-child(1) { animation-delay: 0.05s; }
+    .imovel-card:nth-child(2) { animation-delay: 0.1s; }
+    .imovel-card:nth-child(3) { animation-delay: 0.15s; }
+    .imovel-card:nth-child(4) { animation-delay: 0.2s; }
+    .imovel-card:nth-child(5) { animation-delay: 0.25s; }
+    .imovel-card:nth-child(6) { animation-delay: 0.3s; }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .imovel-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+    .imovel-card.vendido { opacity: 0.8; }
+    .imovel-card.vendido:hover { opacity: 1; }
+
+    .imovel-img { position: relative; height: 220px; overflow: hidden; }
+    .imovel-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+      filter: brightness(0.88);
+    }
+    .imovel-card.vendido .imovel-img img { filter: brightness(0.6) grayscale(25%); }
+    .imovel-card:hover .imovel-img img { transform: scale(1.04); }
+
+    .imovel-tag {
+      position: absolute;
+      top: 1rem; left: 1rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+    }
+    .tag-venda { background: var(--gold); color: var(--black); }
+    .tag-vendido { background: #2a2a2a; color: #888; }
+
+    .vendido-seal {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .vendido-seal span {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.9);
+      border: 2px solid rgba(255,255,255,0.4);
+      padding: 0.5rem 1.5rem;
+      transform: rotate(-12deg);
+    }
+
+    .imovel-info { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .imovel-preco {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 0.4rem;
+      line-height: 1;
+    }
+    .imovel-card.vendido .imovel-preco { color: var(--muted); }
+    .imovel-titulo { font-size: 0.95rem; font-weight: 500; color: var(--white); margin-bottom: 0.3rem; }
+    .imovel-local { font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem; }
+    .imovel-detalhes {
+      display: flex; gap: 1rem;
+      padding: 1rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+    .imovel-detalhe { font-size: 0.72rem; color: var(--muted); display: flex; align-items: center; gap: 0.3rem; }
+    .imovel-detalhe span { color: var(--white); font-weight: 500; }
+    .imovel-link {
+      display: block;
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+    .imovel-link:hover { background: var(--gold); color: var(--black); }
+    .imovel-link.disabled { color: var(--muted); pointer-events: none; border-color: rgba(201,168,76,0.08); cursor: default; }
+
+    footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 3rem;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 2rem;
+    }
+    footer img { height: 34px; opacity: 0.5; }
+    .footer-center {
+      display: flex; align-items: center; gap: 1rem;
+      color: var(--muted); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .footer-center::before, .footer-center::after { content: ''; width: 20px; height: 1px; background: var(--border); }
+    footer p { font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted); text-align: right; }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .nav-links { display: none; }
+      .page-header { padding: 7rem 1.5rem 2rem; }
+      .tabs-wrap { padding: 2rem 1.5rem 0; }
+      .imoveis-wrap { padding: 2rem 1.5rem 4rem; }
+      .imoveis-grid { grid-template-columns: 1fr; }
+      footer { grid-template-columns: 1fr; text-align: center; padding: 2rem 1.5rem; }
+      footer p { text-align: center; }
+      .footer-center { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="BC_IdentidadeVisual_completo_branco_semfundo.png" alt="Bruno Carapinha de Brito">
+    </a>
+    <ul class="nav-links">
+      <li><a href="imoveis.html" class="active">Imóveis</a></li>
+      <li><a href="index.html#sobre">Sobre</a></li>
+      <li><a href="index.html#servicos">Serviços</a></li>
+      <li><a href="index.html#processo">Processo</a></li>
+      <li><a href="index.html#contacto" class="nav-cta">Contactar</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <div class="breadcrumb">
+      <a href="index.html">Início</a> › <span>Imóveis</span>
+    </div>
+    <h1>Portfólio de <em>imóveis</em></h1>
+  </div>
+
+  <div class="tabs-wrap">
+    <button class="tab-btn active" onclick="switchTab('venda', this)">
+      À venda <span class="tab-count">3</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('vendidos', this)">
+      Vendidos <span class="tab-count">3</span>
+    </button>
+  </div>
+
+  <div class="imoveis-wrap">
+
+    <!-- À VENDA -->
+    <div class="tab-panel active" id="panel-venda">
+      <div class="imoveis-grid">
+
+        <div class="imovel-card">
+          <div class="imovel-img">
+            <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80" alt="Moradia T4">
+            <div class="imovel-tag tag-venda">À venda</div>
+          </div>
+          <div class="imovel-info">
+            <div class="imovel-preco">€ 380.000</div>
+            <div class="imovel-titulo">Moradia T4 com jardim</div>
+            <div class="imovel-local">📍 Porto, Foz do Douro</div>
+            <div class="imovel-detalhes">
+              <div class="imovel-detalhe"><span>4</span> quartos</div>
+              <div class="imovel-detalhe"><span>3</span> wc</div>
+              <div class="imovel-detalhe"><span>220</span> m²</div>
+            </div>
+            <a href="https://www.remax.pt" target="_blank" class="imovel-link">Ver anúncio RE/MAX →</a>
+          </div>
+        </div>
+
+        <div class="imovel-card">
+          <div class="imovel-img">
+            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80" alt="Apartamento T2">
+            <div class="imovel-tag tag-venda">À venda</div>
+          </div>
+          <div class="imovel-info">
+            <div class="imovel-preco">€ 195.000</div>
+            <div class="imovel-titulo">Apartamento T2 renovado</div>
+            <div class="imovel-local">📍 Vila Nova de Gaia</div>
+            <div class="imovel-detalhes">
+              <div class="imovel-detalhe"><span>2</span> quartos</div>
+              <div class="imovel-detalhe"><span>1</span> wc</div>
+              <div class="imovel-detalhe"><span>98</span> m²</div>
+            </div>
+            <a href="https://www.remax.pt" target="_blank" class="imovel-link">Ver anúncio RE/MAX →</a>
+          </div>
+        </div>
+
+        <div class="imovel-card">
+          <div class="imovel-img">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80" alt="Moradia T3">
+            <div class="imovel-tag tag-venda">À venda</div>
+          </div>
+          <div class="imovel-info">
+            <div class="imovel-preco">€ 520.000</div>
+            <div class="imovel-titulo">Moradia T3 de luxo com piscina</div>
+            <div class="imovel-local">📍 Matosinhos</div>
+            <div class="imovel-detalhes">
+              <div class="imovel-detalhe"><span>3</span> quartos</div>
+              <div class="imovel-detalhe"><span>2</span> wc</div>
+              <div class="imovel-detalhe"><span>310</span> m²</div>
+            </div>
+            <a href="https://www.remax.pt" target="_blank" class="imovel-link">Ver anúncio RE/MAX →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VENDIDOS -->
+    <div class="tab-panel" id="panel-vendidos">
+      <div class="imoveis-grid">
+
+        <div class="imovel-card vendido">
+          <div class="imovel-img">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80" alt="Apartamento T3">
+            <div class="imovel-tag tag-vendido">Vendido</div>
+            <div class="vendido-seal"><span>VENDIDO</span></div>
+          </div>
+          <div class="imovel-info">
+            <div class="imovel-preco">€ 310.000</div>
+            <div class="imovel-titulo">Apartamento T3 com varanda</div>
+            <div class="imovel-local">📍 Porto, Bonfim</div>
+            <div class="imovel-detalhes">
+              <div class="imovel-detalhe"><span>3</span> quartos</div>
+              <div class="imovel-detalhe"><span>2</span> wc</div>
+              <div class="imovel-detalhe"><span>145</span> m²</div>
+            </div>
+            <a class="imovel-link disabled">Imóvel vendido</a>
+          </div>
+        </div>
+
+        <div class="imovel-card vendido">
+          <div class="imovel-img">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Moradia T4">
+            <div class="imovel-tag tag-vendido">Vendido</div>
+            <div class="vendido-seal"><span>VENDIDO</span></div>
+          </div>
+          <div class="imovel-info">
+            <div class="imovel-preco">€ 445.000</div>
+            <div class="imovel-titulo">Moradia T4 com garage</div>
+            <div class="imovel-local">📍 Vila Nova de Gaia, Canidelo</div>
+            <div class="imovel-detalhes">
+              <div class="imovel-detalhe"><span>4</span> quartos</div>
+              <div class="imovel-detalhe"><span>3</span> wc</div>
+              <div class="imovel-detalhe"><span>260</span> m²</div>
+            </div>
+            <a class="imovel-link disabled">Imóvel vendido</a>
+          </div>
+        </div>
+
+        <div class="imovel-card vendido">
+          <div class="imovel-img">
+            <img src="https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&q=80" alt="Apartamento T1">
+            <div class="imovel-tag tag-vendido">Vendido</div>
+            <div class="vendido-seal"><span>VENDIDO</span></div>
+          </div>
+          <div class="imovel-info">
+            <div class="imovel-preco">€ 165.000</div>
+            <div class="imovel-titulo">Apartamento T1 moderno</div>
+            <div class="imovel-local">📍 Matosinhos Sul</div>
+            <div class="imovel-detalhes">
+              <div class="imovel-detalhe"><span>1</span> quarto</div>
+              <div class="imovel-detalhe"><span>1</span> wc</div>
+              <div class="imovel-detalhe"><span>62</span> m²</div>
+            </div>
+            <a class="imovel-link disabled">Imóvel vendido</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <img src="BC_IdentidadeVisual_completo_branco_semfundo.png" alt="Bruno Carapinha de Brito">
+    <div class="footer-center">© 2026</div>
+    <div style="display:flex; align-items:center; gap:1.5rem; justify-content:flex-end;">
+      <a href="https://www.instagram.com/brunocarapinhadebrito" target="_blank" style="display:flex; align-items:center; gap:0.5rem; color:var(--muted); text-decoration:none; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        Instagram
+      </a>
+      <span style="font-size:0.65rem; letter-spacing:0.1em; color:var(--muted);">Bruno Carapinha de Brito · RE/MAX Portugal</span>
+    </div>
+  </footer>
+
+  <script>
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + tab).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
